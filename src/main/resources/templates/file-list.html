@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>File List</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            margin-top: 50px;
+        }
+
+        .table {
+            margin-top: 20px;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-delete {
+            color: red;
+        }
+
+        .btn-download {
+            color: green;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2 class="text-center">Uploaded Files</h2>
+
+    <!-- Search and Sort Controls -->
+    <form th:action="@{/files}" method="get" class="form-inline mb-3">
+        <input type="text" name="search" placeholder="Search files..." class="form-control mr-2" th:value="${search}">
+        <select name="sort" class="form-control mr-2">
+            <option value="dateAsc" th:selected="${sort == 'dateAsc'}">Date (Ascending)</option>
+            <option value="dateDesc" th:selected="${sort == 'dateDesc'}">Date (Descending)</option>
+            <option value="sizeAsc" th:selected="${sort == 'sizeAsc'}">Size (Ascending)</option>
+            <option value="sizeDesc" th:selected="${sort == 'sizeDesc'}">Size (Descending)</option>
+        </select>
+        <button type="submit" class="btn btn-primary">Search & Sort</button>
+    </form>
+
+    <p th:text="${message}" class="text-center text-success"></p>
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>File Name</th>
+                <th>File Type</th>
+                <th>Size (KB)</th>
+                <th>Upload Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="file : ${files}">
+                <td th:text="${file.filename}">File Name</td>
+                <td th:text="${file.fileType}">File Type</td>
+                <td th:text="${file.size / 1024}">Size</td> <!-- Convert bytes to KB -->
+                <td th:text="${#dates.format(file.uploadDate, 'yyyy-MM-dd')}">Upload Date</td>
+                <td>
+                    <!-- Download Button -->
+                    <a th:href="@{/download-file(fileId=${file.id})}" class="btn btn-link btn-download">
+                        <i class="fas fa-download"></i> Download
+                    </a>
+
+                    <!-- Delete Button -->
+                    <form th:action="@{/delete-file}" method="post" style="display:inline;">
+                        <input type="hidden" name="fileId" th:value="${file.id}"/>
+                        <button type="submit" class="btn btn-link btn-delete">
+                            <i class="fas fa-trash-alt"></i> Delete
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
