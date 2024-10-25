@@ -1,6 +1,8 @@
 
 package com.manas.MetaData;
 
+import java.util.Date;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -12,7 +14,8 @@ public class UploadedFile {
     private String filename;
     private String fileType;
     private byte[] content; // To store the actual file content
-
+    private Date uploadDate; // Date of upload
+    private long size; 
     // Constructors, getters, and setters
     public UploadedFile() {
     }
@@ -21,9 +24,27 @@ public class UploadedFile {
         this.filename = filename;
         this.fileType = fileType;
         this.content = content;
+        this.uploadDate = new Date(); // Set the current date when the file is uploaded
+        this.size = content.length; 
     }
 
-    public String getId() {
+    public Date getUploadDate() {
+		return uploadDate;
+	}
+
+	public void setUploadDate(Date uploadDate) {
+		this.uploadDate = uploadDate;
+	}
+
+	public long getSize() {
+		return size;
+	}
+
+	public void setSize(long size) {
+		this.size = size;
+	}
+
+	public String getId() {
         return id;
     }
 
